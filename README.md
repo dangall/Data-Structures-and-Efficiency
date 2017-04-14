@@ -10,13 +10,21 @@ The following questions were answered as part of the Udacity Machine Learning En
 
 Given two strings `s` and `t`, determine whether some anagram of `t` is a substring of `s`. For example: if `s = "udacity"` and `t = "ad"`, then the function returns `True`. Your function definition should look like: `question1(s, t)` and return a boolean `True` or `False`.
 
+#### Chosen answer
+
+While it's possible to consider all permutations of t and see if any one of them is in s, this approach is inefficient: it will take O(m! * n) where m=len(t) and n=len(s) . My approach is to break up the strings into lists of characters (t_list and s_list). We then only go through s_list once: if we get to a character in t, we remove this character from t_list. If after a number of such steps t_list has length zero, some order of the letter in t was contained in s and we can return True. If we get to a character in s that is not contained in t, we reset t_list to its original value and effectively start over deleting letters from it. This will have the approximate efficiency O(n). It is much more targeted to the correct permutation of letters in t than the brute force approach, and going through a single list (s_list) is very fast.
+
 ### Question 2
 
 Given a string `a`, find the longest palindromic substring contained in `a`. Your function definition should look like `question2(a)`, and return a string.
 
+#### Chosen answer
+
+A first approach could be to reverse the string so it reads backwards, list all substrings, and see which of these substrings is the longest one which appears in the original string. The time for this would be O(n^3), because making all substrings would be O(n^2) and for each one we need to perform a search O(n). The approach I took searches for all palindromic centers, by going through the string only once, and when the previous and the next characters are the same (or we have a double), declare this to be the center of a palindrome. For each center, I then find out how long the palindromic substring is (by growing it in both directions from the center), and simply keep the longest. This algorithm has runtime O(n), because of the search to find the centers and because the time it takes to find the length of each palindrome does not grow with n. My approach treats the string much like a list, rather than a stack or a tree. It is possible that turning the string into a binary search tree, our palindromic search to find centers could be reduced to O(log(n)).
+
 ### Question 3
 
-Given an undirected graph $G$, find the minimum spanning tree within $G$. A minimum spanning tree connects all vertices in a graph with the smallest possible total weight of edges. Your function should take in and return an adjacency list structured like this:
+Given an undirected graph $G$, find the minimum spanning tree within \(G\). A minimum spanning tree connects all vertices in a graph with the smallest possible total weight of edges. Your function should take in and return an adjacency list structured like this:
 ```
 {'A': [('B', 2)],
  'B': [('A', 2), ('C', 5)], 
