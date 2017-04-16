@@ -32,6 +32,10 @@ Given an undirected graph *G*, find the minimum spanning tree within *G*. A mini
  ```
 Vertices are represented as unique strings. The function definition should be `question3(G)`.
 
+#### Chosen answer
+
+This problem seems similar to the shortest-length problem: from a given vertex, we could look for the shortest path is to all the other vertices. However, it may be that this choice of connectivity it globally sub-optimal, i.e. that it is only optimal with regards to that particular vertex. For example, consider four nodes that are fully connected to each other, laid out in the arrangement of a square with two diagonals. The edges along the outer square have weight 1 and the diagonals have weight 1.5. The minimum spanning tree has weight 3, achieved by taking three of the outer edges of the square. From a given vertex, the shortest length to all other vertices involves using the diagonal, giving a spanning tree of length 3.5. The solution I chose makes use of sets and is similar to hierarchical clustering. We begin with each node belonging to a separate "cluster", where the clusters are in the form of sets. We then go through the list of edges, ordered by weight. The smallest-weight edge which connects two nodes belonging to different sets is chosen as the next edge in the algorithm. We then merge the two sets. We proceed in this way until all sets have been merged. The list of the chosen edges specifies a minimum spanning tree. This algorithm has efficiency *O*(*E*) where *E* is the number of edges in the graph.
+
 ### Question 4
 
 Find the least common ancestor between two nodes on a binary search tree. The least common ancestor is the farthest node from the root that is an ancestor of both nodes. For example, the root is a common ancestor of all nodes on the tree, but if both nodes are descendents of the root's left child, then that left child might be the lowest common ancestor. You can assume that both nodes are in the tree, and the tree itself adheres to all BST properties. The function definition should look like `question4(T, r, n1, n2)`, where `T` is the tree represented as a matrix, where the index of the list is equal to the integer stored in that node and a 1 represents a child node, `r` is a non-negative integer representing the root, and `n1` and `n2` are non-negative integers representing the two nodes in no particular order. For example, one test case might be
@@ -47,6 +51,10 @@ question4([[0, 1, 0, 0, 0],
           4)
 ```
 and the answer would be 3.
+
+#### Chosen answer
+
+In a binary search tree, since all descendants on either side of a node are smaller or larger than that node, we are easily able to determine what the least common ancestor of any two nodes is: it is the ancestor node whose value lies between the two chosen nodes. If the two chosen nodes are in a descendant relationship to each other, e.g. one is the child of the other, then the least common ancestor is the node preceding the parent node. To solve this problem we only need to flow down the binary search tree, and stop when we find a node that lies between the two chosen nodes or is a parent to one of the two nodes. Since flowing down BSTs has efficiency *O*(log(*n*)) (for decently balanced trees -- otherwise it is *O*(*n*) in the worse case where the BST is equal to a linked list), we expect our algorithm to have this same efficiency.
 
 ### Question 5
 

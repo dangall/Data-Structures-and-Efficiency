@@ -42,3 +42,17 @@ of sets and is similar to hierarchical clustering. We begin with each node belon
 ordered by weight. The smallest-weight edge which connects two nodes belonging to different sets 
 is chosen as the next edge in the algorithm. We then merge the two sets. We proceed in this way 
 until all sets have been merged. The list of the chosen edges specifies a minimum spanning tree.
+This algorithm has efficiency O(E) where E is the number of edges in the graph.
+
+
+Question 4:
+
+In a binary search tree, since all descendants on either side of a node are smaller or larger than 
+that node, we are easily able to determine what the least common ancestor of any two nodes is: it 
+is the ancestor node whose value lies between the two chosen nodes. If the two chosen nodes are in 
+a descendant relationship to each other, e.g. one is the child of the other, then the least common 
+ancestor is the node preceding the parent node. To solve this problem we only need to flow down the 
+binary search tree, and stop when we find a node that lies between the two chosen nodes or is a 
+parent to one of the two nodes. Since flowing down BSTs has efficiency O(log(n)) (for decently 
+balanced trees -- otherwise it is O(n) in the worse case where the BST is equal to a linked list), 
+we expect our algorithm to have this same efficiency.
