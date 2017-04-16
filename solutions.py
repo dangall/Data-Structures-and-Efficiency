@@ -176,6 +176,62 @@ def question3(input_graph):
             all_sets.pop(indices_to_join[-1])
     return output_graph
 
+# =============== QUESTION 3 ==================
+
+
+def children_values(input_bst, currentnode):
+    """
+    Helper function that returns the value of its children
+    """
+    return np.where(input_bst[currentnode])[0]
+
+
+def LCA_Q(ancestor, node1, node2):
+    """
+    Returns True / False depending on whether the value of ancestor lies
+    between node1 and node2, which determines whether it is the least common
+    ancestor.
+    """
+    if node1 < ancestor < node2:
+        return True
+    elif node2 < ancestor < node1:
+        return True
+    else:
+        return False
+
+
+def question4(input_bst, root_node, node1, node2):
+    if (len(np.array(input_bst).shape) == 2 and
+        np.array(input_bst).shape[0] == np.array(input_bst).shape[1] and
+        np.array(input_bst).shape > max([root_node, node1, node2])):
+        # lca_node will be set to the value of the least common ancenstor (LCA)
+        lca_node = None
+        # Begin with the root node
+        current_node = root_node
+        # We go down the tree until we found the LCA
+        while lca_node is None:
+            # If the current node is between node1 and node2, we have found the
+            # LCA
+            if LCA_Q(current_node, node1, node2):
+                lca_node = current_node
+            else:
+                children = children_values(input_bst, current_node)
+                if current_node < node1:
+                    # we need to select the larger of the two children and
+                    # procced along the tree in that direction
+                    next_node = children[-1]
+                else:
+                    # we need to select the smaller of the two children and
+                    # procced along the tree in that direction
+                    next_node = children[0]
+                if next_node in [node1, node2]:
+                    lca_node = current_node
+                else:
+                    current_node = next_node
+        return lca_node
+    else:
+        print "This input is invalid"
+        return None
 
 # =============================================
 # ================= TESTS =====================
@@ -232,3 +288,41 @@ print question3({'A': [('B', 0.4), ('B', 2), ("C", 1), ("D", 1.5)],
                  "E": [("D", 1)]})
 # Expect {'A': [('B', 0.4), ('C', 1)], 'C': [('A', 1), ('D', 1)],
 # 'B': [('A', 0.4)], 'E': [('D', 1)], 'D': [('C', 1), ('E', 1)]}
+
+print "======================================="
+print "TESTING QUESTION 4"
+
+# We'll create a larger BST
+root_node = 7
+input_bst = np.zeros((25, 25))
+input_bst[7, [6, 20]] = 1
+input_bst[6, [2]] = 1
+input_bst[2, [1, 4]] = 1
+input_bst[4, [3, 5]] = 1
+input_bst[20, [10, 21]] = 1
+input_bst[10, [8, 11]] = 1
+input_bst[21, [23]] = 1
+input_bst[8, [9]] = 1
+input_bst[11, [12]] = 1
+input_bst[23, [22, 24]] = 1
+
+print question4([], 0, 0, 0)
+# Expect None
+
+print question4([[]], 0, 1, 0)
+# Expect None
+
+print question4(input_bst, root_node, 5, 1)
+# Expect 2
+
+print question4(input_bst, root_node, 1, 5)
+# Expect 2
+
+print question4(input_bst, root_node, 12, 22)
+# Expect 20
+
+print question4(input_bst, root_node, 6, 10)
+# Expect 7
+
+print question4(input_bst, root_node, 5, 2)
+# Expect 6
