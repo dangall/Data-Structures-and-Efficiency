@@ -6,6 +6,7 @@ Created on Fri Apr 14 14:52:31 2017
 """
 
 from copy import copy
+import numpy as np
 
 # =============== QUESTION 1 ==================
 
@@ -110,6 +111,71 @@ def question2(input_string):
                                    center + (len_palindrome-1)/2 + 1]
     return longest_palindrome
 
+# =============== QUESTION 3 ==================
+
+
+def list_edges(key_node, val_node):
+    """
+    Takes a node "key_node" and a list of edges it connects to "val_node", and
+    returns the list of edges in the format [({key_node, node1}, edge1_weight),
+    ...] E.g. key_node = "B", val_node = [("A", 1), ("C", 2)] returns
+    [({"A", "B"}, 1), ({"B", "C"}, 2)]
+    """
+    return [({key_node, node}, weight) for node, weight in val_node]
+
+
+def add_edge_output_graph(edge_to_add, graph):
+    """
+    Helper function that takes an edge of the form ({"node1", "node2"},
+    node_weight) and adds it to the list of edges in the graph, in the form
+    {"node1": [("node2", node_weight)], "node2": [("node1", node_weight)]} .
+    """
+    for val in edge_to_add[0]:
+        graph[val] = graph[val] + [(list(edge_to_add[0].difference({val}))[0],
+                                    edge_to_add[1])]
+    return graph
+
+
+def question3(input_graph):
+    # Begin by making each node a separate "cluster". all_sets is the list of
+    # such clusters
+    all_sets = [{key} for key in input_graph.keys()]
+
+    # Make an empty output graph, e.g. {"A": [], "B": [], ...}, which is the
+    # spanning tree. We'll fill it in as we build the spanning tree
+    output_graph = dict([(key, []) for key, val in input_graph.items()])
+
+    # Make a list of all edges. This list will contain duplicates, since
+    # input_graph contains duplicate information for an undirected graph
+    # (each undirected edge appears twice).
+    edge_list = sum([list_edges(key, val) for key, val in input_graph.items()],
+                    [])
+    # We now sort the edge list by the edge-weights.
+    edge_list = sorted(edge_list, key=lambda x: x[-1])
+
+    # Now we'll go through each edge and, if it merges two separate clusters
+    # in all_sets, we add it to output_graph.
+    for pos in range(len(edge_list)):
+        # nodes_to_join are the nodes joined by the edge at edge_list[pos]
+        nodes_to_join = edge_list[pos][0]
+        # We check what the intersection is for each cluster in all_sets.
+        # indices_to_join tells us at which indices there is a nonzero
+        # intersection
+        indices_to_join = np.where([len(nodes_to_join.intersection(clust)) > 0
+                                    for clust in all_sets])[0]
+        # If we have more than 1 index, we are merging two separate clusters.
+        if len(indices_to_join) > 1:
+            # We add this edge to the output spanning tree
+            output_graph = add_edge_output_graph(edge_list[pos], output_graph)
+            # Merge the two clusters. In the first position take the union of
+            # the two
+            all_sets[indices_to_join[0]] = all_sets[indices_to_join[0]].union(
+                                           all_sets[indices_to_join[-1]])
+            # The other cluster is now redundant as it has been absorbed into
+            # the first cluster
+            all_sets.pop(indices_to_join[-1])
+    return output_graph
+
 
 # =============================================
 # ================= TESTS =====================
@@ -152,3 +218,17 @@ print "'" + question2("aa") + "'"
 
 print "======================================="
 print "TESTING QUESTION 3"
+
+print question3({})
+# Expect {}
+
+print question3({'A': [], 'B': [], 'C': [], 'D': [], 'E': []})
+# Expect {'A': [], 'C': [], 'B': [], 'E': [], 'D': []}
+
+print question3({'A': [('B', 0.4), ('B', 2), ("C", 1), ("D", 1.5)],
+                 'B': [('A', 0.4), ("A", 2), ('C', 1.5), ("D", 1)],
+                 'C': [('A', 1), ('B', 1.5), ("D", 1)],
+                 "D": [('A', 1.5), ('B', 1), ("C", 1), ("E", 1)],
+                 "E": [("D", 1)]})
+# Expect {'A': [('B', 0.4), ('C', 1)], 'C': [('A', 1), ('D', 1)],
+# 'B': [('A', 0.4)], 'E': [('D', 1)], 'D': [('C', 1), ('E', 1)]}

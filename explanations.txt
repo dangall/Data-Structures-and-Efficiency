@@ -26,3 +26,19 @@ My approach treats the string much like a list, rather than a stack or a tree. I
 that turning the string into a binary search tree, our palindromic search to find centers could
 be reduced to O(log(n)).
 
+
+Question 3:
+
+This problem seems similar to the shortest-length problem: from a given vertex, we could look 
+for the shortest path is to all the other vertices. However, it may be that this choice of 
+connectivity it globally sub-optimal, i.e. that it is only optimal with regards to that particular 
+vertex. For example, consider four nodes that are fully connected to each other, laid out in the 
+arrangement of a square with two diagonals. The edges along the outer square have weight 1 and 
+the diagonals have weight 1.5. The minimum spanning tree has weight 3, achieved by taking three 
+of the outer edges of the square. From a given vertex, the shortest length to all other vertices 
+involves using the diagonal, giving a spanning tree of length 3.5. The solution I chose makes use
+of sets and is similar to hierarchical clustering. We begin with each node belonging to a separate 
+"cluster", where the clusters are in the form of sets. We then go through the list of edges, 
+ordered by weight. The smallest-weight edge which connects two nodes belonging to different sets 
+is chosen as the next edge in the algorithm. We then merge the two sets. We proceed in this way 
+until all sets have been merged. The list of the chosen edges specifies a minimum spanning tree.
