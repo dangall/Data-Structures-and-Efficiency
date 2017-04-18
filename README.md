@@ -66,3 +66,7 @@ class Node(object):
     self.data = data
     self.next = None
 ```
+
+#### Chosen answer
+
+Since linked ists don't hve indices we have to traverse all the links in order to find out how long the list is. The easiest strategy is to create a LinkedList object which simultaneously constructs the linked list alongside an array that keeps track of all its values. Finding the value of any element in such an object would be *O*(1) in time. This would be cheating however, since this object strictly speaking isnt a linked list, but is simultaneously a linked list and an array. Thus, we need to take our linked list and turn it into an ordinary array which has index labels; doing this transformation has efficiency *O*(*n*). From there, selecting the mth index from the end is an *O*(1) operation.
