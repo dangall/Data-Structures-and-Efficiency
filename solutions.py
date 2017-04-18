@@ -7,6 +7,7 @@ Created on Fri Apr 14 14:52:31 2017
 
 from copy import copy
 import numpy as np
+from timeit import default_timer as timer
 
 # =============== QUESTION 1 ==================
 
@@ -176,7 +177,7 @@ def question3(input_graph):
             all_sets.pop(indices_to_join[-1])
     return output_graph
 
-# =============== QUESTION 3 ==================
+# =============== QUESTION 4 ==================
 
 
 def children_values(input_bst, currentnode):
@@ -232,6 +233,50 @@ def question4(input_bst, root_node, node1, node2):
     else:
         print "This input is invalid"
         return None
+
+# =============== QUESTION 5 ==================
+
+
+class Node(object):
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+
+def make_array(first_node):
+    # We will go through all elements in the linked list and make an array
+    # with each of the consecutive values in the list.
+    start_node = first_node
+    if start_node is not None:
+        array = [start_node.data]
+        current_node = start_node
+        while current_node.next is not None:
+            array.append(current_node.next.data)
+            current_node = current_node.next
+    else:
+        array = []
+    return array
+
+
+def question5(first_node, m):
+    if first_node is not None:
+        return make_array(first_node)[-m]
+
+
+def time_question5(first_node):
+    """
+    Auxiliary function used to time the answer to question 5.
+    """
+    alltimes = []
+    for ii in range(2000):
+        start = timer()
+
+        question5(first_node, 1)
+
+        end = timer()
+        alltimes.append(end - start)
+
+    return np.mean(alltimes)
 
 # =============================================
 # ================= TESTS =====================
@@ -326,3 +371,35 @@ print question4(input_bst, root_node, 6, 10)
 
 print question4(input_bst, root_node, 5, 2)
 # Expect 6
+
+print "======================================="
+print "TESTING QUESTION 5"
+
+# First we create a very long linked list called example 1
+example_1 = Node(6)
+current_node_1 = example_1
+for ii in range(6, 10000, 2):
+    current_node_1.next = Node(ii)
+    current_node_1 = current_node_1.next
+
+# Now we make another linked list approximately half as long, called example 2
+example_2 = Node(6)
+current_node_2 = example_2
+for ii in range(6, 5000, 2):
+    current_node_2.next = Node(ii)
+    current_node_2 = current_node_2.next
+
+print question5(None, 1)
+# Expect None
+
+print question5(example_1, 1)
+# Expect: 9998
+
+print question5(example_2, 1)
+# Expect 4998
+
+print "Time ratio between linked lists of length 4998 and 2498:"
+print time_question5(example_1) / time_question5(example_2)
+
+print question5(Node(42), 1)
+# Expect 42
