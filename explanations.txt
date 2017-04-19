@@ -56,7 +56,10 @@ binary search tree, and stop when we find a node that lies between the two chose
 parent to one of the two nodes. In the best-case scenario, the two chosen nodes lie on opposite 
 sides of the root node. In the worse-case scenario, the two nodes are adjacent leaves and we need 
 to flow down the entire BST in order to find their least common ancestor. In general, the runtime 
-of our algorithm will scale with the the height H of the BST, i.e. will be O(H).
+of our algorithm will scale with the the height H of the BST, i.e. will be O(H), which for balanced
+trees is typically O(log(n)). However, for every vertical step of the tree we need to scan the 
+length of a row in our matrix input, which is an operation of O(n). Therefore, our final runtime
+efficiency is O(n log(n)).
 
 
 Question 5:
