@@ -72,8 +72,8 @@ since this object strictly speaking isn't a linked list, but is simultaneously a
 an array. Also, there is the issue that this solution would take up additional space of order O(n).
 A solution could be to create a LinkedList objects which keeps track of the length of the linked 
 list as it is being built. This won't work with our particular problem however, since we want to 
-be able to be able to dynamically be able to define which node is first by feeding it into 
-question5(ll, m). Our solution will be therefore to first traverse the linked list to find out its 
-length, then traverse it again, but this time only the first n-m steps, and return the value of 
-the node we land on. This solution has time efficiency O(2 n), which is still O(n) in the length 
-of the linked list.
+be able to dynamically define which node is first, by feeding it into question5(ll, m). 
+Our solution will be therefore to first traverse the linked list to find out its length, then 
+traverse it again, but this time only the first n-m steps, and return the value of the node we 
+land on. This solution has time efficiency O(2 n), which is still O(n) in the length of the 
+linked list.
