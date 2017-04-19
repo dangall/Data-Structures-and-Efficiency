@@ -243,24 +243,23 @@ class Node(object):
         self.next = None
 
 
-def make_array(first_node):
-    # We will go through all elements in the linked list and make an array
-    # with each of the consecutive values in the list.
-    start_node = first_node
-    if start_node is not None:
-        array = [start_node.data]
-        current_node = start_node
-        while current_node.next is not None:
-            array.append(current_node.next.data)
-            current_node = current_node.next
-    else:
-        array = []
-    return array
-
-
 def question5(first_node, m):
+    # In order to not take up any additional space, we first find out 
+    # how long our linked list is
+    length = 0
     if first_node is not None:
-        return make_array(first_node)[-m]
+        current_node = first_node
+        length += 1
+        while current_node.next is not None:
+            current_node = current_node.next
+            length += 1
+    # Now we have the length of our linked list. We can now traverse length-m
+    # steps and reach the desired value.
+    if length > 0:
+        current_node = first_node
+        for ii in range(length - m):
+            current_node = current_node.next
+        return current_node.data
 
 
 def time_question5(first_node):
@@ -398,8 +397,8 @@ print question5(example_1, 1)
 print question5(example_2, 1)
 # Expect 4998
 
-print "Time ratio between linked lists of length 4998 and 2498:"
-print time_question5(example_1) / time_question5(example_2)
+#print "Time ratio between linked lists of length 4998 and 2498:"
+#print time_question5(example_1) / time_question5(example_2)
 
 print question5(Node(42), 1)
 # Expect 42
